@@ -19,9 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\color.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\mathlib.cpp" />
     <ClCompile Include="src\renderer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="incude\color.h" />
+    <ClInclude Include="incude\renderer.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
