@@ -5,13 +5,15 @@
 
 class Color {
 public:
-    uint8_t r;
-    uint8_t g;
-    uint8_t b;
-    uint8_t a;
+    uint8_t r; //red channel
+    uint8_t g; //green channel
+    uint8_t b; //blue channel
 
-    Color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha);
+    //constructors
+    Color(uint8_t red, uint8_t green, uint8_t blue);
     Color();
+
+    Color operator+(const Color& other) const;
 };
 
 #endif  // COLOR_H

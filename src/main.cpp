@@ -17,16 +17,16 @@ int main(int argc, char* argv[]) {
 	SDL_RenderClear(renderer);
 
 	Color* frameBuffer = getColors(SCREEN_WIDTH, SCREEN_HEIGHT);
-	std::cout << frameBuffer[0].r << "," << frameBuffer[0].g;
 
 	for (int y = 0; y < SCREEN_HEIGHT; y++) {
 		for (int x = 0; x < SCREEN_WIDTH; x++) {
 			Color currentPixel = frameBuffer[y * SCREEN_WIDTH + x];
-			//std::cout << currentPixel.r << "," << currentPixel.g;
-			SDL_SetRenderDrawColor(renderer, currentPixel.r, currentPixel.g, currentPixel.b, currentPixel.a);
+			SDL_SetRenderDrawColor(renderer, currentPixel.r, currentPixel.g, currentPixel.b, SDL_ALPHA_OPAQUE);
 			SDL_RenderPoint(renderer,x,y);
 		}
 	}
+
+	delete[] frameBuffer;
 
 	SDL_RenderPresent(renderer);
 	SDL_Delay(5000);
