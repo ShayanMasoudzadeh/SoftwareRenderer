@@ -14,6 +14,7 @@ public:
     Color();
 
     Color operator+(const Color& other) const;
+    Color operator*(double scalar) const;
 };
 
 #endif  // COLOR_H
