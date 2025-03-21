@@ -27,17 +27,76 @@ public:
     Sphere(Vector3 c = Vector3(), double r = 1.0, Color cl = Color()) : center(c), radius(r), color(cl) {}
 };
 
+// Light base class
+class Light {
+public:
+    double intensity;
+
+    Light(double intensity = 0.0) : intensity(intensity) {}
+
+    virtual ~Light() {}
+
+    virtual std::string getType() const = 0;
+};
+
+// Ambient light class
+class AmbientLight : public Light {
+public:
+    AmbientLight(double intensity = 0.0) : Light(intensity) {}
+
+    std::string getType() const override {
+        return "AmbientLight";
+    }
+};
+
+// Point light class
+class PointLight : public Light {
+public:
+    Vector3 position;
+
+    PointLight(double intensity = 0.0, Vector3 pos = Vector3()) : Light(intensity), position(pos) {}
+
+    std::string getType() const override {
+        return "PointLight";
+    }
+};
+
+// Directional Light class
+class DirectionalLight : public Light {
+public:
+    Vector3 direction;
+
+    DirectionalLight(double intensity = 0.0, Vector3 dir = Vector3()) : Light(intensity), direction(dir) {}
+
+    std::string getType() const override {
+        return "DirectionalLight";
+    }
+};
+
 // Scene Class
 class Scene {
 public:
     Camera cam;
     std::vector<Sphere> spheres;
+    std::vector<Light*> lights;
 
     Scene(Camera camera = Camera()) : cam(camera) {}
+
+    /*~Scene() {
+        // Clean up allocated memory
+        for (Light* light : lights) {
+            delete light;
+        }
+    }*/
 
     // Add a sphere to the scene
     void addSphere(const Sphere& sphere) {
         spheres.push_back(sphere);
+    }
+
+    // Add a light to the scene
+    void addLight(Light* light) {
+        lights.push_back(light);
     }
 };
 

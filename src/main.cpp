@@ -31,16 +31,20 @@ int main(int argc, char* argv[]) {
 	if (!canvas.Init()) return -1;
 
 	//initiate scene
-	Scene scene = Scene(Camera());
+	Scene scene = Scene(Camera(Vector3(),1,1,1));
 	scene.addSphere(Sphere(Vector3(0, -1, 3), 1.0, Color(255, 0, 0)));
 	scene.addSphere(Sphere(Vector3(2, 0, 4), 1.0, Color(0, 0, 255)));
-	scene.addSphere(Sphere(Vector3(-1, 0, 4.5), 1.0, Color(0, 255, 0)));
+	scene.addSphere(Sphere(Vector3(-2, 0, 4), 1.0, Color(0, 255, 0)));
+	scene.addSphere(Sphere(Vector3(0, -5001, 0), 5000, Color(255, 255, 0)));
+	scene.addLight(new PointLight(0.6, Vector3(2, 1, 0)));
+	scene.addLight(new DirectionalLight(0.2, Vector3(1, 4, 4)));
+	scene.addLight(new AmbientLight(0.2));
 
 	//main rendering loop
 	for (int x = -SCREEN_WIDTH / 2; x < SCREEN_WIDTH / 2; x++) {
 		for (int y = -SCREEN_HEIGHT / 2; y < SCREEN_HEIGHT / 2; y++) {
 			Vector3 D = CanvasToViewport(x, y, scene.cam);
-			Color color = TraceRay(scene.cam.location, D, 1, std::numeric_limits<double>::infinity(), scene.spheres);
+			Color color = TraceRay(scene.cam.location, D, 1, std::numeric_limits<double>::infinity(), scene);
 			PutPixel(x, y, color, &canvas);
 		}
 	}
