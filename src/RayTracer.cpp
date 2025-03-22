@@ -2,7 +2,6 @@
 #include <limits>
 #include "RayTracer.h"
 
-//FIX LATER!!!
 Color TraceRay(Vector3 O, Vector3 D, double t_min, double t_max, Scene scene) {
 	double closest_t = std::numeric_limits<double>::infinity();
 	Sphere closest_sphere = Sphere(Vector3(), 0.0, Color());
@@ -25,7 +24,7 @@ Color TraceRay(Vector3 O, Vector3 D, double t_min, double t_max, Scene scene) {
 	
 	Vector3 P = O + (D * closest_t);
 	Vector3 N = (P - closest_sphere.center).normalize();
-	return closest_sphere.color * ComputeLighting(P, N, scene);
+	return closest_sphere.color * ComputeLighting(P, N, (D * -1), closest_sphere.specular, scene);
 }
 
 void IntersectRaySphere(Vector3 O, Vector3 D, Sphere sphere, double t[2]) {
@@ -48,7 +47,7 @@ void IntersectRaySphere(Vector3 O, Vector3 D, Sphere sphere, double t[2]) {
 	return;
 }
 
-double ComputeLighting(Vector3 P, Vector3 N, const Scene scene) {
+double ComputeLighting(Vector3 P, Vector3 N, Vector3 V, double s, const Scene scene) {
 	double i = 0.0;
 	for (const auto& light : scene.lights) {
 		if (auto* ambLight = dynamic_cast<AmbientLight*>(light)) {
@@ -62,9 +61,21 @@ double ComputeLighting(Vector3 P, Vector3 N, const Scene scene) {
 			else if (auto* dirLight = dynamic_cast<DirectionalLight*>(light)) {
 				L = dirLight->direction;
 			}
+
+			//Diffuse reflection
 			double n_dot_l = N.dot(L);
 			if (n_dot_l > 0) {
 				i += light->intensity * (n_dot_l / (N.magnitude() * L.magnitude()));
+			}
+
+			//Specular reflection
+			if (s >= 0) {
+				Vector3 R = ((N * 2) * N.dot(L) ) - L;
+				double r_dot_v = R.dot(V);
+				if (r_dot_v > 0) {
+					i += light->intensity * pow(r_dot_v / (R.magnitude() * V.magnitude()), s);
+					i = i * 1;
+				}
 			}
 		}
 

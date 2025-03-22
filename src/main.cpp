@@ -31,12 +31,12 @@ int main(int argc, char* argv[]) {
 	if (!canvas.Init()) return -1;
 
 	//initiate scene
-	Scene scene = Scene(Camera(Vector3(),1,1,1));
-	scene.addSphere(Sphere(Vector3(0, -1, 3), 1.0, Color(255, 0, 0)));
-	scene.addSphere(Sphere(Vector3(2, 0, 4), 1.0, Color(0, 0, 255)));
-	scene.addSphere(Sphere(Vector3(-2, 0, 4), 1.0, Color(0, 255, 0)));
-	scene.addSphere(Sphere(Vector3(0, -5001, 0), 5000, Color(255, 255, 0)));
-	scene.addLight(new PointLight(0.6, Vector3(2, 1, 0)));
+	Scene scene = Scene(Camera(Vector3(0,0,0),1,1,1));
+	scene.addSphere(Sphere(Vector3(0, -1, 3), 1.0, Color(255, 0, 0), 500));
+	scene.addSphere(Sphere(Vector3(2, 0, 4), 1.0, Color(0, 0, 255), 500));
+	scene.addSphere(Sphere(Vector3(-2, 0, 4), 1.0, Color(0, 255, 0), 10));
+	scene.addSphere(Sphere(Vector3(0, -5001, 0), 5000, Color(255, 255, 0), 1000));
+	scene.addLight(new PointLight(0.6, Vector3(2, 2, 1)));
 	scene.addLight(new DirectionalLight(0.2, Vector3(1, 4, 4)));
 	scene.addLight(new AmbientLight(0.2));
 

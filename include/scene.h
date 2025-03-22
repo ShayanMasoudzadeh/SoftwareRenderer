@@ -22,9 +22,11 @@ class Sphere {
 public:
     Vector3 center;
     double radius;
-    Color color;
+    //Material features
+    Color color; //Color of the material
+    double specular; //Specular exponent of the material. -1: matte, 10: somewhat shiny, 500: shiny, 1000: very shiny 
 
-    Sphere(Vector3 c = Vector3(), double r = 1.0, Color cl = Color()) : center(c), radius(r), color(cl) {}
+    Sphere(Vector3 c = Vector3(), double r = 1.0, Color cl = Color(), double spec = -1.0) : center(c), radius(r), color(cl), specular(spec) {}
 };
 
 // Light base class
