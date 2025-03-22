@@ -4,5 +4,8 @@ bin/
 *.obj
 *.pdb
 *.log
+*.vcxproj
+*.filters
+*.user
 .vscode/
 .vs/
