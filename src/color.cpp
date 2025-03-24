@@ -18,8 +18,8 @@ Color Color::operator+(const Color& other) const {
 
 Color Color::operator*(double scalar) const {
 	return Color(
-		std::min(255, std::max(0, int(r * scalar))),
-		std::min(255, std::max(0, int(g * scalar))),
-		std::min(255, std::max(0, int(b * scalar)))
+		std::min(255, std::max(0, static_cast<int>(r * scalar))),
+		std::min(255, std::max(0, static_cast<int>(g * scalar))),
+		std::min(255, std::max(0, static_cast<int>(b * scalar)))
 	);
 }

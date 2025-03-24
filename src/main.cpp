@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
 		for (int x = -SCREEN_WIDTH / 2; x < SCREEN_WIDTH / 2; x++) {
 			Vector3 D = CanvasToViewport(x, y, scene.cam);
 			Color color = TraceRay(scene.cam.location, D, 1, std::numeric_limits<double>::infinity(), scene);
-			canvas << int(color.r) << ' ' << int(color.g) << ' ' << int(color.b) << '\n';
+			canvas << static_cast<int>(color.r) << ' ' << static_cast<int>(color.g) << ' ' << static_cast<int>(color.b) << '\n';
 		}
 	}
 }
