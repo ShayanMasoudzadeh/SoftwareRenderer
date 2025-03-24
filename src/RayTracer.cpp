@@ -5,19 +5,8 @@
 Color TraceRay(Vector3 O, Vector3 D, double t_min, double t_max, Scene scene) {
 	double closest_t = std::numeric_limits<double>::infinity();
 	Sphere* closest_sphere = nullptr;
-	for (Sphere& sphere : scene.spheres) {
 
-		double t[2];
-		IntersectRaySphere(O, D, sphere, t);
-		if ((t[0] > t_min && t[0] < t_max) && t[0] < closest_t) {
-			closest_t = t[0];
-			closest_sphere = &sphere;
-		}
-		if ((t[1] > t_min && t[1] < t_max) && t[1] < closest_t) {
-			closest_t = t[1];
-			closest_sphere = &sphere;
-		}
-	}
+	closest_sphere = ClosestIntersection(O, D, t_min, t_max, scene, &closest_t);
 
 	if (closest_sphere == nullptr) {
 		return Color(0,0,0);
@@ -64,6 +53,13 @@ double ComputeLighting(Vector3 P, Vector3 N, Vector3 V, double s, const Scene sc
 				L = dirLight->direction;
 			}
 
+			//check for shadow
+			double shadow_t = 0.0;
+			Sphere* shadow_sphere = ClosestIntersection(P, L, 0.001, std::numeric_limits<double>::infinity(), scene, &shadow_t);
+			if (shadow_sphere != nullptr) {
+				continue;
+			}
+
 			//Diffuse reflection
 			double n_dot_l = N.dot(L);
 			if (n_dot_l > 0) {
@@ -83,4 +79,24 @@ double ComputeLighting(Vector3 P, Vector3 N, Vector3 V, double s, const Scene sc
 
 	}
 	return i;
+}
+
+Sphere* ClosestIntersection(Vector3 O, Vector3 D, double t_min, double t_max, const Scene& scene, double* add_closest_t) {
+
+	*add_closest_t = std::numeric_limits<double>::infinity();
+	Sphere* closest_sphere = nullptr;
+	for (const Sphere& sphere : scene.spheres) {
+
+		double t[2];
+		IntersectRaySphere(O, D, sphere, t);
+		if ((t[0] > t_min && t[0] < t_max) && t[0] < *add_closest_t) {
+			*add_closest_t = t[0];
+			closest_sphere = const_cast<Sphere*>(& sphere);
+		}
+		if ((t[1] > t_min && t[1] < t_max) && t[1] < *add_closest_t) {
+			*add_closest_t = t[1];
+			closest_sphere = const_cast<Sphere*>(&sphere);
+		}
+	}
+	return closest_sphere;
 }
