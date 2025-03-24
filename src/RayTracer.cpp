@@ -4,27 +4,29 @@
 
 Color TraceRay(Vector3 O, Vector3 D, double t_min, double t_max, Scene scene) {
 	double closest_t = std::numeric_limits<double>::infinity();
-	Sphere closest_sphere = Sphere(Vector3(), 0.0, Color());
-	for (const Sphere sphere : scene.spheres) {
+	Sphere* closest_sphere = nullptr;
+	for (Sphere& sphere : scene.spheres) {
 
 		double t[2];
 		IntersectRaySphere(O, D, sphere, t);
 		if ((t[0] > t_min && t[0] < t_max) && t[0] < closest_t) {
 			closest_t = t[0];
-			closest_sphere = sphere;
+			closest_sphere = &sphere;
 		}
 		if ((t[1] > t_min && t[1] < t_max) && t[1] < closest_t) {
 			closest_t = t[1];
-			closest_sphere = sphere;
+			closest_sphere = &sphere;
 		}
 	}
-	if (closest_sphere.radius == 0.0) {
+
+	if (closest_sphere == nullptr) {
 		return Color(0,0,0);
 	}
 	
 	Vector3 P = O + (D * closest_t);
-	Vector3 N = (P - closest_sphere.center).normalize();
-	return closest_sphere.color * ComputeLighting(P, N, (D * -1), closest_sphere.specular, scene);
+	Vector3 N = (P - closest_sphere->center).normalize();
+	Color result = closest_sphere->color * ComputeLighting(P, N, (D * -1), closest_sphere->specular, scene);
+	return result;
 }
 
 void IntersectRaySphere(Vector3 O, Vector3 D, Sphere sphere, double t[2]) {
