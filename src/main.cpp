@@ -1,7 +1,7 @@
 #include <SDL3/SDL.h>
 #include <iostream>
 #include <limits>
-#include "renderer.h"
+#include <fstream>
 #include "WindowManager.h"
 #include "scene.h"
 #include "RayTracer.h"
@@ -26,9 +26,9 @@ void PutPixel(int x, int y, Color color, WindowManager* canvas) {
 
 int main(int argc, char* argv[]) {
 
-	//initiate SDL window and renderer
-	WindowManager canvas(SCREEN_WIDTH, SCREEN_HEIGHT);
-	if (!canvas.Init()) return -1;
+	//create and prepare ppm file canvas
+	std::ofstream canvas("output/render.ppm");
+	canvas << "P3\n" << SCREEN_WIDTH << ' ' << SCREEN_HEIGHT << "\n255\n";
 
 	//initiate scene
 	Scene scene = Scene(Camera(Vector3(0,0,0),1,1,1));
@@ -41,13 +41,11 @@ int main(int argc, char* argv[]) {
 	scene.addLight(new AmbientLight(0.2));
 
 	//main rendering loop
-	for (int x = -SCREEN_WIDTH / 2; x < SCREEN_WIDTH / 2; x++) {
-		for (int y = -SCREEN_HEIGHT / 2; y < SCREEN_HEIGHT / 2; y++) {
+	for (int y = (SCREEN_HEIGHT / 2) - 1; y >= -SCREEN_HEIGHT / 2; y--) {
+		for (int x = -SCREEN_WIDTH / 2; x < SCREEN_WIDTH / 2; x++) {
 			Vector3 D = CanvasToViewport(x, y, scene.cam);
 			Color color = TraceRay(scene.cam.location, D, 1, std::numeric_limits<double>::infinity(), scene);
-			PutPixel(x, y, color, &canvas);
+			canvas << int(color.r) << ' ' << int(color.g) << ' ' << int(color.b) << '\n';
 		}
 	}
-	canvas.Present();
-	SDL_Delay(5000);
 }
