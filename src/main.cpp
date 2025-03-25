@@ -32,10 +32,10 @@ int main(int argc, char* argv[]) {
 
 	//initiate scene
 	Scene scene = Scene(Camera(Vector3(0,0,0),1,1,1));
-	scene.addSphere(Sphere(Vector3(0, -1, 3), 1.0, Color(255, 0, 0), 500));
-	scene.addSphere(Sphere(Vector3(2, 0, 4), 1.0, Color(0, 0, 255), 500));
-	scene.addSphere(Sphere(Vector3(-2, 0, 4), 1.0, Color(0, 255, 0), 10));
-	scene.addSphere(Sphere(Vector3(0, -5001, 0), 5000, Color(255, 255, 0), 1000));
+	scene.addSphere(Sphere(Vector3(0, -1, 3), 1.0, Color(255, 0, 0), 500, 0.2));
+	scene.addSphere(Sphere(Vector3(2, 0, 4), 1.0, Color(0, 0, 255), 500, 0.3));
+	scene.addSphere(Sphere(Vector3(-2, 0, 4), 1.0, Color(0, 255, 0), 1000, 0.5));
+	scene.addSphere(Sphere(Vector3(0, -5001, 0), 5000, Color(255, 255, 0), 10, 0.0));
 	scene.addLight(new PointLight(0.6, Vector3(2, 2, 1)));
 	scene.addLight(new DirectionalLight(0.2, Vector3(1, 4, 4)));
 	scene.addLight(new AmbientLight(0.2));
@@ -44,7 +44,7 @@ int main(int argc, char* argv[]) {
 	for (int y = (SCREEN_HEIGHT / 2) - 1; y >= -SCREEN_HEIGHT / 2; y--) {
 		for (int x = -SCREEN_WIDTH / 2; x < SCREEN_WIDTH / 2; x++) {
 			Vector3 D = CanvasToViewport(x, y, scene.cam);
-			Color color = TraceRay(scene.cam.location, D, 1, std::numeric_limits<double>::infinity(), scene);
+			Color color = TraceRay(scene.cam.location, D, 1, std::numeric_limits<double>::infinity(), scene, 3);
 			canvas << static_cast<int>(color.r) << ' ' << static_cast<int>(color.g) << ' ' << static_cast<int>(color.b) << '\n';
 		}
 	}

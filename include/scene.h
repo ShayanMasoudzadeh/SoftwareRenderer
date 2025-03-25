@@ -25,8 +25,9 @@ public:
     //Material features
     Color color; //Color of the material
     double specular; //Specular exponent of the material. -1: matte, 10: somewhat shiny, 500: shiny, 1000: very shiny 
+    double reflectiveness; //How reflective the surface is. [0, 1]
 
-    Sphere(Vector3 c = Vector3(), double r = 1.0, Color cl = Color(), double spec = -1.0) : center(c), radius(r), color(cl), specular(spec) {}
+    Sphere(Vector3 c = Vector3(), double r = 1.0, Color cl = Color(), double spec = -1.0, double ref = 0.0) : center(c), radius(r), color(cl), specular(spec), reflectiveness(ref) {}
 };
 
 // Light base class

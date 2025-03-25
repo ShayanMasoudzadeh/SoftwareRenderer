@@ -2,20 +2,29 @@
 #include <limits>
 #include "RayTracer.h"
 
-Color TraceRay(Vector3 O, Vector3 D, double t_min, double t_max, Scene scene) {
+Color TraceRay(Vector3 O, Vector3 D, double t_min, double t_max, Scene scene, int recursion_depth) {
 	double closest_t = std::numeric_limits<double>::infinity();
-	Sphere* closest_sphere = nullptr;
-
-	closest_sphere = ClosestIntersection(O, D, t_min, t_max, scene, &closest_t);
+	Sphere* closest_sphere = ClosestIntersection(O, D, t_min, t_max, scene, &closest_t);
 
 	if (closest_sphere == nullptr) {
 		return Color(0,0,0);
 	}
 	
+	//compute local color
 	Vector3 P = O + (D * closest_t);
 	Vector3 N = (P - closest_sphere->center).normalize();
-	Color result = closest_sphere->color * ComputeLighting(P, N, (D * -1), closest_sphere->specular, scene);
-	return result;
+	Color local_color = closest_sphere->color * ComputeLighting(P, N, (D * -1), closest_sphere->specular, scene);
+
+	//exit conditions
+	double r = closest_sphere->reflectiveness;
+	if (recursion_depth <= 0 || r <= 0) {
+		return local_color;
+	}
+
+	//compute reflected color
+	Vector3 R = ReflectRay(D * -1, N);
+	Color reflected_color = TraceRay(P, R, 0.001, std::numeric_limits<double>::infinity(), scene, recursion_depth - 1);
+	return local_color * (1 - r) + reflected_color * r;
 }
 
 void IntersectRaySphere(Vector3 O, Vector3 D, Sphere sphere, double t[2]) {
@@ -68,7 +77,7 @@ double ComputeLighting(Vector3 P, Vector3 N, Vector3 V, double s, const Scene sc
 
 			//Specular reflection
 			if (s >= 0) {
-				Vector3 R = ((N * 2) * N.dot(L) ) - L;
+				Vector3 R = ReflectRay(L, N);
 				double r_dot_v = R.dot(V);
 				if (r_dot_v > 0) {
 					i += light->intensity * pow(r_dot_v / (R.magnitude() * V.magnitude()), s);
@@ -99,4 +108,8 @@ Sphere* ClosestIntersection(Vector3 O, Vector3 D, double t_min, double t_max, co
 		}
 	}
 	return closest_sphere;
+}
+
+Vector3 ReflectRay(Vector3 R, Vector3 N) {
+	return ((N * 2) * N.dot(R)) - R;
 }
